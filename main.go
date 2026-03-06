@@ -9,24 +9,29 @@ import (
 )
 
 func main() {
-	wd, _ := os.Getwd()
-	fmt.Println("Working directory:", wd)
+	for {
+		noteText, err := promptForNote()
+		if err != nil {
+			fmt.Println("error reading note:", err)
+			return
+		}
 
-	noteText, err := promptForNote()
-	if err != nil {
-		fmt.Println("error reading note:", err)
-		return
+		if noteText == "" {
+			fmt.Println("Goodbye. All entrys saved.")
+			return
+		}
+
+		entry := formatEntry(noteText)
+
+		err = appendToJournal(entry)
+		if err != nil {
+			fmt.Println("error writing journal:", err)
+			return
+		}
+
+		fmt.Println("Entry saved successfully at " + time.Now().Format("15:04:05"))
+
 	}
-
-	entry := formatEntry(noteText)
-
-	err = appendToJournal(entry)
-	if err != nil {
-		fmt.Println("error writing journal:", err)
-		return
-	}
-
-	fmt.Println("Entry saved successfully.")
 }
 
 // asks user fir note
