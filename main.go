@@ -10,27 +10,55 @@ import (
 
 func main() {
 	for {
-		noteText, err := promptForNote()
+
+		fmt.Println("Choose command: write, view, quit")
+
+		reader := bufio.NewReader(os.Stdin)
+		command, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Println("error reading note:", err)
+			fmt.Println("Error readiung command:", err)
 			return
 		}
 
-		if noteText == "" {
-			fmt.Println("Goodbye. All entrys saved.")
+		command = strings.TrimSpace(command)
+		command = strings.ToLower(command)
+
+		switch command {
+		case "write":
+			noteText, err := promptForNote()
+			if err != nil {
+				fmt.Println("error reading note:", err)
+				return
+			}
+
+			if noteText == "" {
+				fmt.Println("Goodbye. All entrys saved.")
+				return
+			}
+
+			entry := formatEntry(noteText)
+
+			err = appendToJournal(entry)
+			if err != nil {
+				fmt.Println("error writing journal:", err)
+				return
+			}
+
+		case "view":
+			err := readJournal()
+			if err != nil {
+				fmt.Println("Error Reading Journal:", err)
+			}
+
+		case "quit":
+			fmt.Println("Goodbye.")
 			return
+
+		default:
+			fmt.Println("Unknown Command.")
+
 		}
-
-		entry := formatEntry(noteText)
-
-		err = appendToJournal(entry)
-		if err != nil {
-			fmt.Println("error writing journal:", err)
-			return
-		}
-
 		fmt.Println("Entry saved successfully at " + time.Now().Format("15:04:05"))
-
 	}
 }
 
@@ -69,5 +97,16 @@ func appendToJournal(entry string) error {
 		return err
 	}
 
+	return nil
+}
+
+func readJournal() error {
+	data, err := os.ReadFile("journal.txt")
+	if err != nil {
+		fmt.Println("Journal is empty.")
+		return nil
+	}
+
+	fmt.Println(string(data))
 	return nil
 }
