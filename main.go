@@ -9,11 +9,12 @@ import (
 )
 
 func main() {
+	reader := bufio.NewReader(os.Stdin)
+
 	for {
 
 		fmt.Println("Choose command: write, view, quit")
 
-		reader := bufio.NewReader(os.Stdin)
 		command, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Println("Error readiung command:", err)
@@ -100,6 +101,7 @@ func appendToJournal(entry string) error {
 	return nil
 }
 
+// read journal.
 func readJournal() error {
 	data, err := os.ReadFile("journal.txt")
 	if err != nil {
