@@ -13,7 +13,7 @@ func main() {
 
 	for {
 
-		fmt.Println("Choose command: write, view, quit")
+		fmt.Println("Choose command: write, view, help, quit")
 
 		command, err := reader.ReadString('\n')
 		if err != nil {
@@ -50,6 +50,9 @@ func main() {
 			if err != nil {
 				fmt.Println("Error Reading Journal:", err)
 			}
+
+		case "help":
+			showHelp()
 
 		case "quit":
 			fmt.Println("Goodbye.")
@@ -111,4 +114,13 @@ func readJournal() error {
 
 	fmt.Println(string(data))
 	return nil
+}
+
+// shows available commands
+func showHelp() {
+	fmt.Println("Available Commands:")
+	fmt.Println("Write - add a journal entry")
+	fmt.Println("View - display journal entries")
+	fmt.Println("Help - Show list of commands")
+	fmt.Println("Quit - Exit program")
 }
